@@ -29,7 +29,9 @@ function Chat (nym, db) {
 
 Chat.prototype.join = function (channel) {
   var self = this
-  if (has(self.swarms, channel)) return
+  if (has(self.swarms, channel)) {
+    return self.emit('join', channel)
+  }
   self.logs[channel] = hyperlog(
     sub(self.db, channel), { valueEncoding: 'json' })
 

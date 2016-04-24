@@ -45,7 +45,12 @@ window.addEventListener('resize', update)
 
 var catchlinks = require('catch-links')
 catchlinks(window, function (href) {
-  console.log(href)
+  console.log('href=', href)
+  var m = /(#.+)$/.exec(href)
+  if (m) {
+    state.channel = m[1]
+    update()
+  }
 })
 
 function render (state) {
