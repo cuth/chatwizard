@@ -1,0 +1,22 @@
+{
+  "name": "chatwizard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "watchify main.js -o public/bundle.js -dv",
+    "build": "browserify main.js -o public/bundle.js -dv"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "catch-links": "^2.0.1",
+    "hyperreal": "^3.1.1",
+    "level": "^1.4.0",
+    "level-browserify": "^1.1.0",
+    "ssb-keys": "^5.0.1",
+    "strftime": "^0.9.2",
+    "yo-yo": "^1.1.1"
+  }
+}

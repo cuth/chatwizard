@@ -1,0 +1,62 @@
+body {
+  margin: 0px;
+  font-family: monospace;
+}
+
+*:focus {
+  outline: none;
+}
+
+input, button {
+  font-family: monospace;
+}
+
+#content {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.lines .inner, .channels .inner {
+  padding: 1ex;
+}
+.channels {
+  display: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 1.5em;
+  width: 20ex;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(240,240,240);
+}
+
+.lines {
+  position: absolute;
+  top: 0px;
+  left: 20ex;
+  right: 0px;
+  bottom: 1.5em;
+}
+
+.time {
+  width: 8ex;
+  margin-right: 1ex;
+}
+
+.input {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 2em;
+  background-color: white;
+  border-top: 4px solid rgb(127,127,127);
+  padding-top: 0.5em;
+}
+
+.input input[name="text"] {
+  border-width: 0px;
+}
