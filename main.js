@@ -1,21 +1,30 @@
 var strftime = require('strftime')
 var html = require('yo-yo')
+var uniq = require('uniq')
 
 var root = document.querySelector('#content')
 
 var state = {
-  channels: [
-    '#stackvm',
-    '#browserify',
-    '#p2p',
-    '#anarchitecture'
-  ],
-  channel: '#stackvm',
-  lines: [
-    {time: 1461528788732, who:'abc',message:'hello'},
-    {time: 1461528792147, who:'def',message:'whatever'}
-  ]
+  channels: [],
+  channel: '(status)',
+  lines: []
 }
+var memdb = require('memdb')
+var chat = require('./index.js')(memdb())
+chat.on('join', function (channel) {
+  state.channels.push(channel)
+  uniq(state.channels)
+  state.channel = channel
+  update()
+})
+
+chat.on('part', function (channel) {
+  var ix = state.channels.indexOf(channel)
+  if (ix >= 0) state.channels.splice(ix, 1)
+  state.channel = state.channels[Math.max(0,ix-1)] || '(status)'
+  update()
+})
+
 function update () {
   html.update(root, render(state))
   root.querySelector('input[name="text"]').focus()
@@ -46,28 +55,30 @@ function render (state) {
         </div>`
       })}
     </div></div>
-    <form class="input">
+    <form class="input" onsubmit=${onsubmit}>
       [${state.channel}]
       <input type="text" name="text" onblur=${onblur}
         style="width: calc(100% - ${state.channel.length+6}ex)">
     </form>
   </div>`
   function onblur () { this.focus() }
+  function onsubmit (ev) {
+    ev.preventDefault()
+    var msg = this.elements.text.value
+    handleMsg(msg)
+  }
 }
 
-/*
-var hyperreal = require('hyperreal')
-var swarmlog = require('swarmlog')
-var keys = require('hyperreal/keys')
-
-var memdb = require('memdb')
-var kp = {
-  enc: keys.encryptKeypair(),
-  sig: keys.signKeypair()
+function handleMsg (msg) {
+  var m = /^\/(\S+)/.exec(msg)
+  var cmd = (m && m[1] || '').toLowerCase()
+  if (cmd === 'join') {
+    chat.join(msg.split(/\s+/)[1] || state.channel)
+  } else if (cmd === 'part') {
+    chat.part(msg.split(/\s+/)[1] || state.channel)
+  } else if (cmd) {
+    // unknown command
+  } else {
+    chat.say(state.channel, msg)
+  }
 }
-
-var swarm = require('webrtc-swarm')
-var signalhub = require('signalhub')
-
-var hub = signalhub('chatwizard.')
-*/
