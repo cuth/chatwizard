@@ -6,6 +6,7 @@ Commands work like IRC:
 
   /join #channelname
   /part #channelname
+  /nick whatever
 
 Once you're in a channel, type messages like normal.
 
