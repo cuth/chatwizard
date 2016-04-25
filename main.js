@@ -7,11 +7,12 @@ var root = document.querySelector('#content')
 
 var state = {
   channels: [],
-  channel: '(status)',
+  channel: location.hash || '(status)',
   nym: randomBytes(3).toString('hex'),
   lines: {},
   activity: {}
 }
+
 var memdb = require('memdb')
 var chat = require('./index.js')(state.nym, memdb())
 chat.on('join', function (channel) {
@@ -50,6 +51,12 @@ function update () {
 update()
 window.addEventListener('resize', update)
 
+if (location.hash) chat.join(location.hash)
+
+window.addEventListener('hashchange', function () {
+  chat.join(location.hash)
+})
+
 var catchlinks = require('catch-links')
 catchlinks(window, function (href) {
   var m = /(#.+)$/.exec(href)
@@ -61,6 +68,7 @@ catchlinks(window, function (href) {
 })
 
 function render (state) {
+  location.hash = state.channel
   return html`<div id="content">
     <div class="channels"><div class="inner">
       ${state.channels.map(function (channel) {

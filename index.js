@@ -45,12 +45,12 @@ Chat.prototype.join = function (channel) {
   self.swarms[channel] = swarm
   self.peers[channel] = {}
   self.onswarm[channel] = function (peer, id) {
-    console.log('PEER', id)
+    self.emit('peer', channel, id)
     self.peers[channel][id] = peer
     peer.pipe(self.logs[channel].replicate({ live: true })).pipe(peer)
   }
   self.ondisconnect[channel] = function (peer, id) {
-    console.log('DISCONNECT', id)
+    self.emit('disconnect', channel, id)
     delete self.peers[channel][id]
   }
   swarm.on('peer', self.onswarm[channel])
