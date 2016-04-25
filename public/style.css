@@ -33,6 +33,33 @@ input, button {
   background-color: rgb(240,240,240);
 }
 
+.channel a:link, .channel a:visited {
+  display: inline-block;
+  width: 100%;
+  color: rgb(40,40,40);
+  padding: 0.25em;
+}
+
+.channel a:hover {
+  background-color: rgb(250,250,250);
+}
+
+.channels .current:link, .channels .current:visited {
+  font-weight: bold;
+  background-color: rgb(220,220,220);
+  color: rgb(40,40,40);
+}
+
+.channels .activity:link, .channels .activity:visited {
+  font-weight: bold;
+  color: blue;
+}
+
+.channels .mentioned:link, .channels .mentioned:visited {
+  font-weight: bold;
+  color: red;
+}
+
 .lines {
   position: absolute;
   top: 0px;

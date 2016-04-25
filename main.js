@@ -10,7 +10,7 @@ var state = {
   channel: '(status)',
   nym: randomBytes(3).toString('hex'),
   lines: {},
-  //activity: {}
+  activity: {}
 }
 var memdb = require('memdb')
 var chat = require('./index.js')(state.nym, memdb())
@@ -18,6 +18,7 @@ chat.on('join', function (channel) {
   state.channels.push(channel)
   uniq(state.channels)
   state.channel = channel
+  state.activity[channel] = false
   update()
 })
 
@@ -25,6 +26,7 @@ chat.on('part', function (channel) {
   var ix = state.channels.indexOf(channel)
   if (ix >= 0) state.channels.splice(ix, 1)
   state.channel = state.channels[Math.max(0,ix-1)] || '(status)'
+  state.activity[state.channel] = false
   update()
 })
 
@@ -34,6 +36,11 @@ chat.on('say', function (channel, row) {
   state.lines[channel].sort(function (a, b) {
     return a.value.time < b.value.time ? -1 : 1
   })
+  var nymre = RegExp('\\b' + chat.nym + '\\b')
+  if (state.channel !== channel) {
+    state.activity[channel] = nymre.test(row.value.message)
+      ? 'mentioned' : 'activity'
+  }
   update()
 })
 
@@ -45,10 +52,10 @@ window.addEventListener('resize', update)
 
 var catchlinks = require('catch-links')
 catchlinks(window, function (href) {
-  console.log('href=', href)
   var m = /(#.+)$/.exec(href)
   if (m) {
     state.channel = m[1]
+    state.activity[state.channel] = false
     update()
   }
 })
@@ -57,8 +64,10 @@ function render (state) {
   return html`<div id="content">
     <div class="channels"><div class="inner">
       ${state.channels.map(function (channel) {
+        var c = state.activity[channel] || ''
+        if (state.channel === channel) c = 'current'
         return html`<div class="channel">
-          <a href="${channel}">${channel}</a>
+          <a href="${channel}" class="${c}">${channel}</a>
         </div>`
       })}
     </div></div>
