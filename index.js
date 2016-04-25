@@ -6,8 +6,6 @@ var inherits = require('inherits')
 var EventEmitter = require('events').EventEmitter
 var has = require('has')
 var wswarm = require('webrtc-swarm')
-var onend = require('end-of-stream')
-var pump = require('pump')
 var through = require('through2')
 var sub = require('subleveldown')
 var shasum = require('shasum')
@@ -23,6 +21,7 @@ function Chat (nym, db) {
   this.swarms = {}
   this.peers = {}
   this.onswarm = {}
+  this.ondisconnect = {}
   this.nym = nym
   this.hubs = [ 'https://signalhub.mafintosh.com/' ]
 }
@@ -45,11 +44,14 @@ Chat.prototype.join = function (channel) {
   var swarm = wswarm(hub)
   self.swarms[channel] = swarm
   self.peers[channel] = {}
-  console.log('onswarm')
   self.onswarm[channel] = function (peer, id) {
     console.log('PEER', id)
     self.peers[channel][id] = peer
     peer.pipe(self.logs[channel].replicate({ live: true })).pipe(peer)
+  }
+  self.ondisconnect[channel] = function (peer, id) {
+    console.log('DISCONNECT', id)
+    delete self.peers[channel][id]
   }
   swarm.on('peer', self.onswarm[channel])
 }
@@ -59,8 +61,10 @@ Chat.prototype.part = function (channel) {
   if (!has(self.swarms, channel)) return
   delete self.logs[channel]
   self.swarms[channel].removeListener('peer', self.onswarm[channel])
+  self.swarms[channel].removeListener('peer', self.ondisconnect[channel])
   delete self.swarms[channel]
   delete self.onswarm[channel]
+  delete self.ondisconnect[channel]
   Object.keys(self.peers[channel]).forEach(function (key) {
     self.peers[channel][key].destroy()
   })

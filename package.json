@@ -12,7 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "catch-links": "^2.0.1",
-    "end-of-stream": "^1.1.0",
     "has": "^1.0.1",
     "hyperreal": "^3.1.1",
     "inherits": "^2.0.1",

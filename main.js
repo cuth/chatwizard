@@ -9,7 +9,8 @@ var state = {
   channels: [],
   channel: '(status)',
   nym: randomBytes(3).toString('hex'),
-  lines: {}
+  lines: {},
+  //activity: {}
 }
 var memdb = require('memdb')
 var chat = require('./index.js')(state.nym, memdb())
@@ -82,8 +83,8 @@ function render (state) {
   function onsubmit (ev) {
     ev.preventDefault()
     var msg = this.elements.text.value
+    this.reset()
     handleMsg(msg)
-    this.elements.text.value = ''
   }
 }
 
