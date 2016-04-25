@@ -38,7 +38,6 @@ chat.on('say', function (channel, row) {
 
 function update () {
   html.update(root, render(state))
-  root.querySelector('input[name="text"]').focus()
 }
 update()
 window.addEventListener('resize', update)
@@ -75,6 +74,7 @@ function render (state) {
     <form class="input" onsubmit=${onsubmit}>
       [${state.channel}]
       <input type="text" name="text" onblur=${onblur}
+        autofocus
         style="width: calc(100% - ${state.channel.length+6}ex)">
     </form>
   </div>`
