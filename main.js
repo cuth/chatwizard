@@ -22,6 +22,9 @@ chat.on('join', function (channel) {
   state.activity[channel] = false
   update()
 })
+chat.on('peer', update)
+chat.on('disconnect', update)
+setInterval(update, 1000)
 
 chat.on('part', function (channel) {
   var ix = state.channels.indexOf(channel)
@@ -72,6 +75,7 @@ function render (state) {
   return html`<div id="content">
     <div class="channels"><div class="inner">
       ${state.channels.map(function (channel) {
+        if (channel === '#(status)') return ''
         var c = state.activity[channel] || ''
         if (state.channel === channel) c = 'current'
         return html`<div class="channel">
@@ -89,6 +93,11 @@ function render (state) {
         </div>`
       })}
     </div></div>
+    <div class="info">
+      [${strftime('%T', new Date)}]
+      [${chat.nym}]
+      ${Object.keys(chat.peers[state.channel] || {}).length} peers
+    </div>
     <form class="input" onsubmit=${onsubmit}>
       [${state.channel}]
       <input type="text" name="text" onblur=${onblur}
@@ -115,6 +124,8 @@ function handleMsg (msg) {
   } else if (cmd === 'nick' || cmd === 'n') {
     chat.nym = msg.split(/\s+/)[1]
     update()
+  } else if (cmd === 'help' || cmd === 'h') {
+    chat.join('#(status)')
   } else if (cmd) {
     // unknown command
   } else if (state.channel !== '(status)') {

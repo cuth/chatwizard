@@ -26,7 +26,7 @@ input, button {
   display: absolute;
   top: 0px;
   left: 0px;
-  bottom: 1.5em;
+  bottom: 2.5em;
   width: 20ex;
   height: 100%;
   overflow: auto;
@@ -65,7 +65,7 @@ input, button {
   top: 0px;
   left: 20ex;
   right: 0px;
-  bottom: 1.5em;
+  bottom: 2.5em;
 }
 
 .time {
@@ -80,10 +80,20 @@ input, button {
   right: 0px;
   height: 2em;
   background-color: white;
-  border-top: 4px solid rgb(127,127,127);
   padding-top: 0.5em;
 }
 
 .input input[name="text"] {
   border-width: 0px;
+}
+
+.info {
+  position: absolute;
+  bottom: 2.5em;
+  left: 0px;
+  right: 0px;
+  height: 1.5em;
+  padding-top: 0.25em;
+  background-color: rgb(127,127,127);
+  color: white;
 }

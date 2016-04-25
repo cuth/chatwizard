@@ -13,6 +13,8 @@ var shasum = require('shasum')
 module.exports = Chat
 inherits(Chat, EventEmitter)
 
+var helpMessage = require('./help.js')
+
 function Chat (nym, db) {
   if (!(this instanceof Chat)) return new Chat(nym, db)
   EventEmitter.call(this)
@@ -28,6 +30,18 @@ function Chat (nym, db) {
 
 Chat.prototype.join = function (channel) {
   var self = this
+  if (channel === '#(status)') {
+    helpMessage.split('\n').forEach(function (msg) {
+      self.emit('say', channel, {
+        value: {
+          time: Date.now(),
+          who: '(info)',
+          message: msg
+        }
+      })
+    })
+    return self.emit('join', channel)
+  }
   if (has(self.swarms, channel)) {
     return self.emit('join', channel)
   }
